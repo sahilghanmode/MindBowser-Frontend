@@ -14,7 +14,7 @@ const Navbar = () => {
 
     return (
         <nav className="navbar glass-panel">
-            <div className="container nav-content">
+            <div className="nav-content">
                 <Link to="/" className="nav-brand">
                     <BookOpen className="brand-icon" />
                     <span>Mindbowser AI share</span>

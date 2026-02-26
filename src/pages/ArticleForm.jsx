@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import { request } from '../services/api';
 import { Sparkles, Loader2 } from 'lucide-react';
 import './ArticleForm.css';
@@ -56,7 +56,7 @@ const ArticleForm = () => {
     };
 
     const handleAiImprove = async (type) => {
-        const rawText = content.replace(/<[^>]+>/g, '');
+        const rawText = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/(✨ AI Suggestion:|\[AI Improved\]|\[AI Suggestion\]:?)\s*/g, '').trim();
         if (!rawText) return;
 
         setAiLoading(prev => ({ ...prev, improve: true }));
@@ -65,7 +65,9 @@ const ArticleForm = () => {
                 method: 'POST',
                 body: JSON.stringify({ text: rawText, type })
             });
-            setContent(`<p><strong>[AI Suggestion]:</strong> ${result}</p>` + content);
+            // Clean the existing content of previous suggestions if they exist at the top to avoid endless stacking
+            const cleanContent = content.replace(/^<p><strong>✨ AI Suggestion:<\/strong>.*?<\/p>/, '');
+            setContent(`<p><strong>✨ AI Suggestion:</strong> ${result}</p>` + cleanContent);
         } catch (err) {
             console.error(err);
         } finally {
@@ -74,7 +76,7 @@ const ArticleForm = () => {
     };
 
     const handleAiTags = async () => {
-        const rawText = content.replace(/<[^>]+>/g, '');
+        const rawText = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/(✨ AI Suggestion:|\[AI Improved\]|\[AI Suggestion\]:?)\s*/g, '').trim();
         if (!rawText) return;
 
         setAiLoading(prev => ({ ...prev, tags: true }));
@@ -92,7 +94,7 @@ const ArticleForm = () => {
     };
 
     const handleAiSummary = async () => {
-        const rawText = content.replace(/<[^>]+>/g, '');
+        const rawText = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/(✨ AI Suggestion:|\[AI Improved\]|\[AI Suggestion\]:?)\s*/g, '').trim();
         if (!rawText) return;
 
         setAiLoading(prev => ({ ...prev, summary: true }));
